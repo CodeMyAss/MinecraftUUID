@@ -209,8 +209,8 @@
 
     <distributionManagement>
         <repository>
-            <id>snw-ftp</id>
-            <url>ftp://turt2live.com/</url>
+            <id>turt2live-ftp</id>
+            <url>ftp://ftp.turt2live.com/public_html/maven2</url>
         </repository>
     </distributionManagement>
 
