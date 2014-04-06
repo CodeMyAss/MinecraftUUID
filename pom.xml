@@ -1,36 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright (C) ShockNetwork LLC - All Rights Reserved
-  ~ Unauthorized copying of this file, via any medium is strictly prohibited
-  ~ Proprietary and confidential.
-  ~ Please contact ShockNetwork LLC for exclusive permissions in regards to this file.
-  ~
-  ~ Use of this file, in any form or degree, is prohibitted outside the terms and conditions
-  ~ of ShockNetwork LLC. Any use of the code and/or contents contained within this file
-  ~ without exclusive permission from ShockNetwork LLC is strictly prohibitted.
-  ~
-  ~ Use of this file, in any form or degree, is permitted when all parties involved are
-  ~ considered, under the active current owner of ShockNetwork LLC, ShockNetwork LLC
-  ~ employees or developers. Other projects, code, or mediums which use and/or host this
-  ~ file, in it's entirety or in part, must be considered active and legal under the
-  ~ active current owner of ShockNetwork LLC.
-  ~
-  ~ If a project, host, or otherwise entity using this file in part or in full, to any degree
-  ~ is terminated under the terms and/or contract provided by the current active owner of
-  ~ ShockNetwork LLC, then the abusing project, host, or otherwise entity must terminate
-  ~ the use of this file, in full or in part, regardless of permission. In order for a
-  ~ project, host, or otherwise entity to regain permission to use this file, in whole or
-  ~ in part, there must be written permission from the current active owner of ShockNetwork
-  ~ LLC.
-  ~
-  ~ For questions or concerns, please contact ShockNetwork LLC directly at the following
-  ~ email address: <support@snw.io>.
-  ~
-  ~ This file, in whole or in part, and it's users are to be considered protected from
-  ~ 2014 until the termination of this notice as specified with written permission
-  ~ from ShockNetwork LLC.
-  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
