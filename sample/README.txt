@@ -1,0 +1,1 @@
+Put a compiled MinecraftUUID.jar in here to run the windows script.

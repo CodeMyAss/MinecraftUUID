@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) ShockNetwork LLC - All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential.
+  ~ Please contact ShockNetwork LLC for exclusive permissions in regards to this file.
+  ~
+  ~ Use of this file, in any form or degree, is prohibitted outside the terms and conditions
+  ~ of ShockNetwork LLC. Any use of the code and/or contents contained within this file
+  ~ without exclusive permission from ShockNetwork LLC is strictly prohibitted.
+  ~
+  ~ Use of this file, in any form or degree, is permitted when all parties involved are
+  ~ considered, under the active current owner of ShockNetwork LLC, ShockNetwork LLC
+  ~ employees or developers. Other projects, code, or mediums which use and/or host this
+  ~ file, in it's entirety or in part, must be considered active and legal under the
+  ~ active current owner of ShockNetwork LLC.
+  ~
+  ~ If a project, host, or otherwise entity using this file in part or in full, to any degree
+  ~ is terminated under the terms and/or contract provided by the current active owner of
+  ~ ShockNetwork LLC, then the abusing project, host, or otherwise entity must terminate
+  ~ the use of this file, in full or in part, regardless of permission. In order for a
+  ~ project, host, or otherwise entity to regain permission to use this file, in whole or
+  ~ in part, there must be written permission from the current active owner of ShockNetwork
+  ~ LLC.
+  ~
+  ~ For questions or concerns, please contact ShockNetwork LLC directly at the following
+  ~ email address: <support@snw.io>.
+  ~
+  ~ This file, in whole or in part, and it's users are to be considered protected from
+  ~ 2014 until the termination of this notice as specified with written permission
+  ~ from ShockNetwork LLC.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.turt2live</groupId>
+    <artifactId>MinecraftUUID</artifactId>
+    <name>MinecraftUUID</name>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+
+        <BUILD_NUMBER>Local</BUILD_NUMBER>
+    </properties>
+
+    <!-- DEPENDENCIES -->
+
+    <dependencies>
+
+        <!-- Apache Commons CLI -->
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- Compile-time stuff -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- REPOSITORIES -->
+
+    <repositories>
+
+        <!-- For turt2live stuff -->
+        <repository>
+            <id>turt2live-repo</id>
+            <url>http://repo.turt2live.com</url>
+        </repository>
+
+    </repositories>
+
+    <!-- BUILD -->
+
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+        <finalName>${project.name}</finalName>
+        <!-- Distribution Management -->
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-alpha-6</version>
+            </extension>
+        </extensions>
+
+        <!-- BUILD PLUGINS -->
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.turt2live.minecraftuuid.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <!--<plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.3.8</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>target/classes/*.yml</file>
+                    <replacements>
+                        <replacement>
+                            <token>maven-version-number</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                        <replacement>
+                            <token>jenkins-build-number</token>
+                            <value>${BUILD_NUMBER}</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <!--<configuration> <stylesheetfile>${project.basedir}/style/stylesheet.css</stylesheetfile>
+                  </configuration> -->
+                <executions>
+                    <execution>
+                        <id>non-aggregate</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>false</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>commons-cli:commons-cli</include>
+                                    <include>com.googlecode.json-simple:json-simple</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.apache.commons.cli</pattern>
+                                    <shadedPattern>org.apache.commons.cli.${project.name}</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- DISTRIBUTION MANAGEMENT -->
+
+    <distributionManagement>
+        <repository>
+            <id>snw-ftp</id>
+            <url>ftp://turt2live.com/</url>
+        </repository>
+    </distributionManagement>
+
+</project>

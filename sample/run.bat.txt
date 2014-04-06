@@ -1,0 +1,35 @@
+@echo off
+title MinecraftUUID Parser (turt2live)
+:A
+java -jar MinecraftUUID.jar
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -uuid turt2live
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -name c465b1543c294dbfa7e3e0869504b8d8
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -uuid turt2live -export output1.csv
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -name c465b1543c294dbfa7e3e0869504b8d8 -export output2.csv
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -uuid names.txt -file
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -uuid names.txt -file -export output3.csv
+java -jar MinecraftUUID.jar -uuid names.txt -file -export output3.csv -append
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -name uuids.txt -file
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -name uuids.txt -file -export output4.csv
+java -jar MinecraftUUID.jar -name uuids.txt -file -export output4.csv -append
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -history c465b1543c294dbfa7e3e0869504b8d8
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -history c465b1543c294dbfa7e3e0869504b8d8 -export output5.csv
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -history uuids.txt -file
+echo ----------------------------------------------------------
+java -jar MinecraftUUID.jar -history uuids.txt -file -export output6.csv
+java -jar MinecraftUUID.jar -history uuids.txt -file -export output6.csv -append
+echo ----------------------------------------------------------
+echo Done
+pause
+goto A
