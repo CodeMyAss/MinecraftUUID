@@ -13,21 +13,51 @@ public class ThreadTest implements Runnable {
 
     private static ConcurrentLinkedQueue<String> QUEUE = new ConcurrentLinkedQueue<String>();
     private static ConcurrentLinkedQueue<String> NO_UUID = new ConcurrentLinkedQueue<String>();
+    private static ConcurrentLinkedQueue<String> OUTPUT = new ConcurrentLinkedQueue<String>();
 
     public static void main(String[] args) {
         final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
+
+        for (int i = 0; i < 5; i++) {
+            new Thread(new ThreadTest()).start();
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("no_uuid.txt"), false));
+                        while (NO_UUID.size() > 0) {
+                            writer.write(NO_UUID.poll());
+                            writer.newLine();
+                        }
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }).start();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 3; i < 17; i++) {
                     String start = generate(i);
                     QUEUE.add(start);
-                    System.out.println(start);
+                    OUTPUT.add(start);
                     while ((start = next(start)) != null) {
                         QUEUE.add(start);
-                        System.out.println(start);
+                        OUTPUT.add(start);
                     }
-                    while (QUEUE.size() > 100000) {
+                    while (QUEUE.size() > 1000000) {
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
@@ -71,24 +101,12 @@ public class ThreadTest implements Runnable {
             }
         }).start();
 
-        for (int i = 0; i < 5; i++) {
-            new Thread(new ThreadTest()).start();
-        }
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("no_uuid.txt"), false));
-                        while (NO_UUID.size() > 0) {
-                            writer.write(NO_UUID.poll());
-                            writer.newLine();
-                        }
-                        writer.flush();
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    while (OUTPUT.size() > 0) {
+                        System.out.println(OUTPUT.poll());
                     }
 
                     try {
@@ -108,7 +126,7 @@ public class ThreadTest implements Runnable {
                 UUID uuid = UUIDServiceProvider.getUUID(name);
                 String uid = uuid == null ? "Unknown" : uuid.toString().replace("-", "");
                 if (uuid == null) NO_UUID.add(name);
-                System.out.println(name + " = " + uid);
+                OUTPUT.add("[" + Thread.currentThread().getId() + "] " + name + " = " + uid);
             }
             try {
                 Thread.sleep(100);
