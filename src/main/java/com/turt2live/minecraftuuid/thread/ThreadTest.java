@@ -13,7 +13,6 @@ public class ThreadTest implements Runnable {
 
     private static ConcurrentLinkedQueue<String> QUEUE = new ConcurrentLinkedQueue<String>();
     private static ConcurrentLinkedQueue<String> NO_UUID = new ConcurrentLinkedQueue<String>();
-    private static ConcurrentLinkedQueue<String> OUTPUT = new ConcurrentLinkedQueue<String>();
 
     public static void main(String[] args) {
         final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
@@ -52,10 +51,10 @@ public class ThreadTest implements Runnable {
                 for (int i = 3; i < 17; i++) {
                     String start = generate(i);
                     QUEUE.add(start);
-                    OUTPUT.add(start);
+                    System.out.println(start);
                     while ((start = next(start)) != null) {
                         QUEUE.add(start);
-                        OUTPUT.add(start);
+                        System.out.println(start);
                     }
                     while (QUEUE.size() > 1000000) {
                         try {
@@ -100,22 +99,6 @@ public class ThreadTest implements Runnable {
                 return -1;
             }
         }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    while (OUTPUT.size() > 0) {
-                        System.out.println(OUTPUT.poll());
-                    }
-
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                    }
-                }
-            }
-        }).start();
     }
 
     @Override
@@ -126,7 +109,7 @@ public class ThreadTest implements Runnable {
                 UUID uuid = UUIDServiceProvider.getUUID(name);
                 String uid = uuid == null ? "Unknown" : uuid.toString().replace("-", "");
                 if (uuid == null) NO_UUID.add(name);
-                OUTPUT.add("[" + Thread.currentThread().getId() + "] " + name + " = " + uid);
+                System.out.println("[" + Thread.currentThread().getId() + "] " + name + " = " + uid);
             }
             try {
                 Thread.sleep(100);
