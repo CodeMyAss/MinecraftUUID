@@ -79,7 +79,8 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.turt2live.minecraftuuid.Main</mainClass>
+                            <!--<mainClass>com.turt2live.minecraftuuid.Main</mainClass>-->
+                            <mainClass>com.turt2live.minecraftuuid.thread.ThreadTest</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

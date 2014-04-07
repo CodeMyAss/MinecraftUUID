@@ -2,11 +2,6 @@ package com.turt2live.minecraftuuid.thread;
 
 import com.turt2live.minecraftuuid.api.UUIDServiceProvider;
 
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -15,35 +10,63 @@ public class ThreadTest implements Runnable {
     private static ConcurrentLinkedQueue<String> QUEUE = new ConcurrentLinkedQueue<String>();
 
     public static void main(String[] args) {
-        final FileDialog dialog = new FileDialog((Frame) null, "Open", FileDialog.LOAD);
-        dialog.setVisible(true);
+        final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    while (QUEUE.size() < 100000) {
-                        try {
-                            BufferedReader reader = new BufferedReader(new FileReader(new File(dialog.getDirectory(), dialog.getFile())));
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                System.out.println("Queued " + line);
-                                QUEUE.add(line);
-                            }
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                for (int i = 3; i < 17; i++) {
+                    String start = generate(i);
+                    QUEUE.add(start);
+                    System.out.println(start);
+                    while ((start = next(start)) != null) {
+                        QUEUE.add(start);
+                        System.out.println(start);
                     }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-
+                    while (QUEUE.size() > 100000) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                        }
                     }
                 }
             }
+
+            private String generate(int i) {
+                String s = "";
+                for (int x = 0; x < i; x++) {
+                    s += valid[0];
+                }
+                return s;
+            }
+
+            private String next(String s) {
+                char[] chars = s.toCharArray();
+                boolean made = false;
+                for (int i = chars.length - 1; i >= 0; i--) {
+                    if (chars[i] != valid[valid.length - 1]) {
+                        chars[i] = valid[indexOf(valid, chars[i]) + 1];
+                        made = true;
+                        for (int o = chars.length - 1; o > i; o--) {
+                            chars[o] = valid[0];
+                        }
+                        break;
+                    }
+                }
+                if (!made) return null;
+                return new String(chars);
+            }
+
+            private int indexOf(char[] chars, char c) {
+                for (int i = 0; i < chars.length; i++) {
+                    if (chars[i] == c) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
         }).start();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             new Thread(new ThreadTest()).start();
         }
     }
@@ -58,9 +81,8 @@ public class ThreadTest implements Runnable {
                 System.out.println(name + " = " + uid);
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
-
             }
         }
     }
