@@ -2,12 +2,17 @@ package com.turt2live.minecraftuuid.thread;
 
 import com.turt2live.minecraftuuid.api.UUIDServiceProvider;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ThreadTest implements Runnable {
 
     private static ConcurrentLinkedQueue<String> QUEUE = new ConcurrentLinkedQueue<String>();
+    private static ConcurrentLinkedQueue<String> NO_UUID = new ConcurrentLinkedQueue<String>();
 
     public static void main(String[] args) {
         final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
@@ -69,6 +74,30 @@ public class ThreadTest implements Runnable {
         for (int i = 0; i < 5; i++) {
             new Thread(new ThreadTest()).start();
         }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("no_uuid.txt"), false));
+                        while (NO_UUID.size() > 0) {
+                            writer.write(NO_UUID.poll());
+                            writer.newLine();
+                        }
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -78,6 +107,7 @@ public class ThreadTest implements Runnable {
                 String name = QUEUE.poll();
                 UUID uuid = UUIDServiceProvider.getUUID(name);
                 String uid = uuid == null ? "Unknown" : uuid.toString().replace("-", "");
+                if (uuid == null) NO_UUID.add(name);
                 System.out.println(name + " = " + uid);
             }
             try {
