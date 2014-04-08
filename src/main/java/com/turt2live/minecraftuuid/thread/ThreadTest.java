@@ -22,7 +22,7 @@ public class ThreadTest implements Runnable {
         final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
         final String last = "qhkv";
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 5; i++) {
             new Thread(new ThreadTest()).start();
         }
 
