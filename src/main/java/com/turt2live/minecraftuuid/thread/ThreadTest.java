@@ -40,11 +40,11 @@ public class ThreadTest implements Runnable {
                     QUEUE.add(start);
                     while ((start = next(start)) != null) {
                         QUEUE.add(start);
-                    }
-                    while (QUEUE.size() > 1000) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
+                        while (QUEUE.size() > 1000) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                            }
                         }
                     }
                 }
