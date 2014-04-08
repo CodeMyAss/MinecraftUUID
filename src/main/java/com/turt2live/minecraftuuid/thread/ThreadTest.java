@@ -38,10 +38,8 @@ public class ThreadTest implements Runnable {
                         didLast = true;
                     }
                     QUEUE.add(start);
-                    System.out.println("["+QUEUE.size()+" Q] "+start);
                     while ((start = next(start)) != null) {
                         QUEUE.add(start);
-                        System.out.println("["+QUEUE.size()+" Q] "+start);
                     }
                     while (QUEUE.size() > 100000) {
                         try {
