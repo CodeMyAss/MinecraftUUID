@@ -20,7 +20,7 @@ public class ThreadTest implements Runnable {
 
     public static void main(String[] args) {
         final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
-        final String last = "rpa4";
+        final String last = "r3aa";
 
         for (int i = 0; i < 5; i++) {
             new Thread(new ThreadTest()).start();
@@ -38,12 +38,12 @@ public class ThreadTest implements Runnable {
                         didLast = true;
                     }
                     QUEUE.add(start);
-                    System.out.println(start);
+                    System.out.println("["+QUEUE.size()+" Q] "+start);
                     while ((start = next(start)) != null) {
                         QUEUE.add(start);
-                        System.out.println(start);
+                        System.out.println("["+QUEUE.size()+" Q] "+start);
                     }
-                    while (QUEUE.size() > 1000000) {
+                    while (QUEUE.size() > 100000) {
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
@@ -92,7 +92,6 @@ public class ThreadTest implements Runnable {
     @Override
     public void run() {
         while (!DONE.get()) {
-            int c = 0;
             List<String> buffer = new ArrayList<String>();
             while (QUEUE.size() > 0) {
                 String name = QUEUE.poll();
@@ -118,12 +117,9 @@ public class ThreadTest implements Runnable {
                         }
                         buffer.clear();
                     } catch (Exception e) {
-                        for (String n : buffer) {
-                            QUEUE.add(n);
-                        }
                     }
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                     }
                 }
@@ -153,6 +149,7 @@ public class ThreadTest implements Runnable {
                         QUEUE.add(n);
                     }
                 }
+                buffer.clear();
             }
             try {
                 Thread.sleep(100);
