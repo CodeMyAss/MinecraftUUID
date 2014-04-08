@@ -1,13 +1,22 @@
 package com.turt2live.minecraftuuid.thread;
 
-import com.turt2live.minecraftuuid.api.UUIDServiceProvider;
+import com.turt2live.minecraftuuid.UUIDFetcher;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadTest implements Runnable {
 
     private static ConcurrentLinkedQueue<String> QUEUE = new ConcurrentLinkedQueue<String>();
+    private static AtomicBoolean DONE = new AtomicBoolean(false);
 
     public static void main(String[] args) {
         final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
@@ -41,6 +50,7 @@ public class ThreadTest implements Runnable {
                         }
                     }
                 }
+                DONE.set(true);
             }
 
             private String generate(int i) {
@@ -81,12 +91,64 @@ public class ThreadTest implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!DONE.get()) {
+            int c = 0;
+            List<String> buffer = new ArrayList<String>();
             while (QUEUE.size() > 0) {
                 String name = QUEUE.poll();
-                UUID uuid = UUIDServiceProvider.getUUID(name);
-                String uid = uuid == null ? "Unknown" : uuid.toString().replace("-", "");
-                System.out.println("[" + QUEUE.size() + "] " + name + " = " + uid);
+                buffer.add(name);
+                if (buffer.size() >= UUIDFetcher.MAX_SEARCH - 1) {
+                    try {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("thread_" + Thread.currentThread().getId() + ".csv"), true));
+                        try {
+                            Map<String, UUID> results = new UUIDFetcher(buffer).call();
+                            for (Map.Entry<String, UUID> entry : results.entrySet()) {
+                                UUID uuid = entry.getValue();
+                                String uid = uuid == null ? "Unknown" : uuid.toString().replace("-", "");
+                                if (uuid != null) {
+                                    writer.write("\"" + uuid.toString().replace("-", "") + "\",\"" + entry.getKey() + "\"");
+                                    writer.newLine();
+                                }
+                                System.out.println("[" + QUEUE.size() + "] " + entry.getKey() + " = " + uid);
+                            }
+                            writer.flush();
+                            writer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        buffer.clear();
+                    } catch (Exception e) {
+                        for (String n : buffer) {
+                            QUEUE.add(n);
+                        }
+                    }
+                }
+            }
+            if (buffer.size() > 0) {
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(new File("thread_" + Thread.currentThread().getId() + ".csv"), true));
+                    try {
+                        Map<String, UUID> results = new UUIDFetcher(buffer).call();
+                        for (Map.Entry<String, UUID> entry : results.entrySet()) {
+                            UUID uuid = entry.getValue();
+                            String uid = uuid == null ? "Unknown" : uuid.toString().replace("-", "");
+                            if (uuid != null) {
+                                writer.write("\"" + uuid.toString().replace("-", "") + "\",\"" + entry.getKey() + "\"");
+                                writer.newLine();
+                            }
+                            System.out.println("[" + QUEUE.size() + "] " + entry.getKey() + " = " + uid);
+                        }
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    buffer.clear();
+                } catch (Exception e) {
+                    for (String n : buffer) {
+                        QUEUE.add(n);
+                    }
+                }
             }
             try {
                 Thread.sleep(100);
