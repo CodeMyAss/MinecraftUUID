@@ -11,7 +11,7 @@ public class ThreadTest implements Runnable {
 
     public static void main(String[] args) {
         final char[] valid = "abcdefghijklmnopqrstuvwxyz1234567890_".toCharArray();
-        final String last = "p8aa";
+        final String last = "p8rk";
 
         for (int i = 0; i < 10; i++) {
             new Thread(new ThreadTest()).start();
@@ -86,7 +86,7 @@ public class ThreadTest implements Runnable {
                 String name = QUEUE.poll();
                 UUID uuid = UUIDServiceProvider.getUUID(name);
                 String uid = uuid == null ? "Unknown" : uuid.toString().replace("-", "");
-                System.out.println(name + " = " + uid);
+                System.out.println("[" + QUEUE.size() + "] " + name + " = " + uid);
             }
             try {
                 Thread.sleep(100);
